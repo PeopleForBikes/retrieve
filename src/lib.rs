@@ -9,11 +9,11 @@ use url::Url;
 pub mod cli;
 
 /// Represent the PFB S3 storage base URL.
-const PFB_S3_STORAGE_BASE_URL: &'static str =
+const PFB_S3_STORAGE_BASE_URL: &str =
     "https://s3.amazonaws.com/production-pfb-storage-us-east-1/results";
 
 /// Represent the name of the "neighborhood ways" dataset.
-const DS_NEIGHBORHOOD_WAYS: &'static str = "neighborhood_ways";
+const DS_NEIGHBORHOOD_WAYS: &str = "neighborhood_ways";
 
 /// Setup the application.
 ///
@@ -75,8 +75,8 @@ impl City {
         City {
             name: name.into(),
             country: country.into(),
-            state: if state.is_some() {
-                state.unwrap().into()
+            state: if let Some(s) = state {
+                s.into()
             } else {
                 country.into()
             },
@@ -102,7 +102,7 @@ impl City {
             "{}/{}/{}.zip",
             PFB_S3_STORAGE_BASE_URL,
             self.uuid,
-            Dataset::NeighborhoodWays.to_string()
+            Dataset::NeighborhoodWays
         );
         let url = Url::parse(&dataset_url)?;
         Ok(url)
@@ -132,6 +132,6 @@ impl City {
             cities.push(record?);
         }
 
-        return Ok(cities);
+        Ok(cities)
     }
 }
