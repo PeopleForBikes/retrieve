@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2022-01-16
+
+### Added
+
+- Added multiplatform support. [#4]
+
+### Fixed
+
+- Fixed release job. [#3]
+
 ## [0.1.0] - 2022-01-16
 
 Initial version.
+
+[#3]: https://github.com/PeopleForBikes/retrieve/pull/3
+[#4]: https://github.com/PeopleForBikes/retrieve/pull/4
