@@ -16,5 +16,9 @@ clap = { version = "3.0.7", features = ["derive"] }
 color-eyre = "0.6"
 csv = "1.1.6"
 downloader = { version = "0.2.6", features = ["tui"]}
-url = "2.0" 
+openssl = { version = '0.10', features = ["vendored"] }
 serde = { version="1.0.130", features = ["derive"]}
+url = "2.0" 
+
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
