@@ -101,7 +101,7 @@ jobs:
       name: build
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@master
+        - uses: actions/checkout@v2
         - uses: actions/cache@v2
           with:
             path: |
@@ -139,7 +139,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -165,6 +165,7 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
+      - uses: actions/checkout@v2
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
       - name: Get Changelog Entry
