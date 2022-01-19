@@ -11,7 +11,7 @@ Several datasets are downloaded concurently (25 by default), and the progress is
 reported on the screen as a progress bar for each file, including the estimated
 time left to completion.
 
-![retrieve from CSV](retrieve-from-csv.png)
+![retrieve from CSV](assets/retrieve-from-csv.png)
 
 ## Usage
 
