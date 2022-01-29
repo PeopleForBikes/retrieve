@@ -126,16 +126,20 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-          # - windows-latest
+          - windows-latest
         include:
           - os: macos-latest
             target: x86_64-apple-darwin
+            extension: ''
           - os: macos-latest
             target: aarch64-apple-darwin
+            extension: ''
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-          # - os: windows-latest
-            # target: x86_64-pc-windows-msvc
+            extension: ''
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            extension: '.exe'
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -158,13 +162,14 @@ jobs:
           command: build
           args: --release --all-features --target ${{ matrix.target }}
       - name: Rename binary
+        shell: bash
         run: |
-          cp target/${{ matrix.target }}/release/retrieve retrieve-${{ matrix.target }}
+          cp target/${{ matrix.target }}/release/retrieve${{ matrix.extension }} retrieve-${{ matrix.target }}${{ matrix.extension }}
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: retrieve-${{ matrix.target }}
-          path: retrieve-${{ matrix.target }}
+          name: retrieve-${{ matrix.target }}${{ matrix.extension }}
+          path: retrieve-${{ matrix.target }}${{ matrix.extension }}
 
   publish:
     needs:
