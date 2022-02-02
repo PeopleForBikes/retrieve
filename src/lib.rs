@@ -14,6 +14,7 @@ const PFB_S3_STORAGE_BASE_URL: &str =
 
 /// Represent the name of the "neighborhood ways" dataset.
 const DS_NEIGHBORHOOD_WAYS: &str = "neighborhood_ways";
+const DS_NEIGHBORHOOD_OVERALL_SCORES: &str = "neighborhood_overall_scores";
 
 /// Setup the application.
 ///
@@ -28,12 +29,14 @@ pub fn setup() -> Result<(), Report> {
 #[derive(Debug, PartialEq, PartialOrd, ArgEnum, Clone, Copy)]
 pub enum Dataset {
     NeighborhoodWays,
+    NeighborhoodOverallScores,
 }
 
 impl From<&str> for Dataset {
     fn from(item: &str) -> Self {
         match item {
             DS_NEIGHBORHOOD_WAYS => Dataset::NeighborhoodWays,
+            DS_NEIGHBORHOOD_OVERALL_SCORES => Dataset::NeighborhoodOverallScores,
             _ => panic!("Cannot parse dataset name {}", item),
         }
     }
@@ -43,6 +46,7 @@ impl fmt::Display for Dataset {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Dataset::NeighborhoodWays => write!(f, "{}", DS_NEIGHBORHOOD_WAYS),
+            Dataset::NeighborhoodOverallScores => write!(f, "{}", DS_NEIGHBORHOOD_OVERALL_SCORES),
         }
     }
 }
@@ -96,6 +100,11 @@ impl City {
         format!("{}.zip", self.full_name())
     }
 
+    /// Return the full name of the city with the `.csv` extension.
+    pub fn csv_name(&self) -> String {
+        format!("{}.csv", self.full_name())
+    }
+
     /// Return the URL of the neighborhood_ways data set.
     pub fn neighborhood_ways_url(&self) -> Result<Url, Report> {
         let dataset_url = format!(
@@ -108,10 +117,23 @@ impl City {
         Ok(url)
     }
 
+    /// Return the URL of the neighborhood_overall_scores data set.
+    pub fn neighborhood_overall_scores_url(&self) -> Result<Url, Report> {
+        let dataset_url = format!(
+            "{}/{}/{}.csv",
+            PFB_S3_STORAGE_BASE_URL,
+            self.uuid,
+            Dataset::NeighborhoodOverallScores
+        );
+        let url = Url::parse(&dataset_url)?;
+        Ok(url)
+    }
+
     /// Return the URL of the specified `dataset`.
     pub fn url(&self, dataset: Dataset) -> Result<Url, Report> {
         match dataset {
             Dataset::NeighborhoodWays => self.neighborhood_ways_url(),
+            Dataset::NeighborhoodOverallScores => self.neighborhood_overall_scores_url(),
         }
     }
 
