@@ -2,7 +2,7 @@ use clap::Parser;
 use color_eyre::{eyre::Report, Result};
 use downloader::{Download, Downloader};
 use retrieve::cli::Args;
-use retrieve::{setup, City};
+use retrieve::{setup, City, Dataset};
 use std::fs;
 
 fn main() -> Result<(), Report> {
@@ -34,14 +34,24 @@ fn main() -> Result<(), Report> {
         .unwrap();
 
     // Prepare the downloads.
-    let downloads = cities
-        .iter()
-        .filter(|c| !c.uuid.is_empty())
-        .map(|c| {
-            downloader::Download::new(c.url(args.dataset).unwrap().as_str())
-                .file_name(std::path::Path::new(&c.zip_name()))
-        })
-        .collect::<Vec<Download>>();
+    let downloads = match args.dataset {
+        Dataset::NeighborhoodWays => cities
+            .iter()
+            .filter(|c| !c.uuid.is_empty())
+            .map(|c| {
+                downloader::Download::new(c.url(args.dataset).unwrap().as_str())
+                    .file_name(std::path::Path::new(&c.zip_name()))
+            })
+            .collect::<Vec<Download>>(),
+        Dataset::NeighborhoodOverallScores => cities
+            .iter()
+            .filter(|c| !c.uuid.is_empty())
+            .map(|c| {
+                downloader::Download::new(c.url(args.dataset).unwrap().as_str())
+                    .file_name(std::path::Path::new(&c.csv_name()))
+            })
+            .collect::<Vec<Download>>(),
+    };
 
     // Start the download operations.
     let _dl_result = downloader.download(&downloads);
