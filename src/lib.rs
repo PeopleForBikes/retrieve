@@ -51,6 +51,15 @@ impl fmt::Display for Dataset {
     }
 }
 
+impl Dataset {
+    pub fn extension(&self) -> String {
+        match self {
+            Dataset::NeighborhoodWays => String::from("zip"),
+            Dataset::NeighborhoodOverallScores => String::from("csv"),
+        }
+    }
+}
+
 /// Define a PeopleForBikes city.
 #[derive(Debug, Deserialize, Clone)]
 pub struct City {
@@ -95,46 +104,16 @@ impl City {
         format!("{}-{}-{}", self.country, self.state, self.name)
     }
 
-    /// Return the full name of the city with the `.zip` extension.
-    pub fn zip_name(&self) -> String {
-        format!("{}.zip", self.full_name())
-    }
-
-    /// Return the full name of the city with the `.csv` extension.
-    pub fn csv_name(&self) -> String {
-        format!("{}.csv", self.full_name())
-    }
-
-    /// Return the URL of the neighborhood_ways data set.
-    pub fn neighborhood_ways_url(&self) -> Result<Url, Report> {
-        let dataset_url = format!(
-            "{}/{}/{}.zip",
-            PFB_S3_STORAGE_BASE_URL,
-            self.uuid,
-            Dataset::NeighborhoodWays
-        );
-        let url = Url::parse(&dataset_url)?;
-        Ok(url)
-    }
-
-    /// Return the URL of the neighborhood_overall_scores data set.
-    pub fn neighborhood_overall_scores_url(&self) -> Result<Url, Report> {
-        let dataset_url = format!(
-            "{}/{}/{}.csv",
-            PFB_S3_STORAGE_BASE_URL,
-            self.uuid,
-            Dataset::NeighborhoodOverallScores
-        );
-        let url = Url::parse(&dataset_url)?;
-        Ok(url)
-    }
-
-    /// Return the URL of the specified `dataset`.
+    /// Return the URL of the specified dataset.
     pub fn url(&self, dataset: Dataset) -> Result<Url, Report> {
-        match dataset {
-            Dataset::NeighborhoodWays => self.neighborhood_ways_url(),
-            Dataset::NeighborhoodOverallScores => self.neighborhood_overall_scores_url(),
-        }
+        let dataset_url = format!(
+            "{}/{}/{}.{}",
+            PFB_S3_STORAGE_BASE_URL,
+            self.uuid,
+            dataset,
+            dataset.extension()
+        );
+        Ok(Url::parse(&dataset_url)?)
     }
 
     /// Read a CSV file and populate a Vector of Cities.
