@@ -78,13 +78,29 @@ pub struct City {
     /// should be assimilated to a version number (each run will generate a
     /// new identifier).
     pub uuid: String,
+    /// City's population.
+    pub population: u32,
+    /// City rating.
+    #[serde(rename = "city_ratings_total")]
+    pub ratings: f64,
+    /// Rounded city rating.
+    #[serde(rename = "city_ratings_rounded")]
+    pub ratings_rounded: u8,
 }
 impl City {
     /// Create a new City.
     ///
     /// If the `state` is not specified (a lot of countries do not have states),
     /// the name of the country is used instead.
-    pub fn new(name: &str, country: &str, state: Option<&str>, uuid: &str) -> Self {
+    pub fn new(
+        name: &str,
+        country: &str,
+        state: Option<&str>,
+        uuid: &str,
+        population: u32,
+        ratings: f64,
+        ratings_rounded: u8,
+    ) -> Self {
         City {
             name: name.into(),
             country: country.into(),
@@ -94,6 +110,9 @@ impl City {
                 country.into()
             },
             uuid: uuid.into(),
+            population,
+            ratings,
+            ratings_rounded,
         }
     }
 
@@ -135,4 +154,103 @@ impl City {
 
         Ok(cities)
     }
+}
+
+/// Define a city scorecard.
+#[derive(Debug, Deserialize, Clone)]
+pub struct ScoreCard {
+    /// City details.
+    #[serde(flatten)]
+    pub city: City,
+    /// Community survey results.
+    #[serde(flatten)]
+    pub community_survey: CommunitySurvey,
+    /// BNA results.
+    #[serde(flatten)]
+    pub bna: BNA,
+    /// Infrastructure details.
+    #[serde(flatten)]
+    pub infrastructure: Infrastructure,
+}
+
+impl ScoreCard {
+    /// Read a CSV file and populate a Vector of ScoreCards.
+    pub fn from_csv<P>(path: P) -> Result<Vec<ScoreCard>, Report>
+    where
+        P: AsRef<Path>,
+    {
+        let mut csv_reader = Reader::from_path(path)?;
+        let mut scorecards: Vec<ScoreCard> = vec![];
+        for record in csv_reader.deserialize() {
+            scorecards.push(record?);
+        }
+
+        Ok(scorecards)
+    }
+}
+/// Represent the results from the community survey.
+#[derive(Debug, Deserialize, Clone)]
+pub struct CommunitySurvey {
+    /// Perception of the quality of the bicycle network in the city.
+    #[serde(rename = "Community Survey - Network")]
+    pub network: f64,
+    /// Perceptions of acceleration and awareness of bike events and facilities in an area.
+    #[serde(rename = "Community Survey - Awareness")]
+    pub awareness: f64,
+    /// Perceptions of safety riding a bike .
+    #[serde(rename = "Community Survey - Safety")]
+    pub safety: f64,
+    /// Measure how often respondents engage in different types of riding.
+    #[serde(rename = "Community Survey - Ridership")]
+    pub ridership: f64,
+    /// Overall community survey score.
+    #[serde(rename = "Community Score - Total")]
+    pub total: f64,
+    /// Overall community survey rounded score.
+    #[serde(rename = "Community Score - Total, Rounded")]
+    pub total_rounded: u32,
+    /// Number of responses to the survey.
+    #[serde(rename = "Community Survey - Responses")]
+    pub responses: u32,
+}
+
+/// Represent the results from the BNA.
+#[derive(Debug, Deserialize, Clone)]
+pub struct BNA {
+    /// How well people can reach other people by bike.
+    #[serde(rename = "BNA - neighborhoods")]
+    pub neighborhoods: f64,
+    /// How well people can reach employment and educational opportunities by bike.
+    #[serde(rename = "BNA - opportunity")]
+    pub opportunity: f64,
+    /// How well people can reach Core Services by bike.
+    #[serde(rename = "BNA - essential_services")]
+    #[serde(deserialize_with = "csv::invalid_option")]
+    pub essential_services: Option<f64>,
+    /// How well people can reach retail shopping opportunities by bike.
+    #[serde(rename = "BNA - retail")]
+    pub retail: f64,
+    /// How well people can reach recreation opportunities by bike.
+    #[serde(rename = "BNA - recreation")]
+    #[serde(deserialize_with = "csv::invalid_option")]
+    pub recreation: Option<f64>,
+    /// How well people can reach major transit hubs by bike.
+    #[serde(rename = "BNA - transit")]
+    pub transit: f64,
+    /// How well the bike network gets people to the places they want to go.
+    #[serde(rename = "BNA - overall_score")]
+    pub overall_score: f64,
+}
+
+/// Represent a city bike infrastructure.
+#[derive(Debug, Deserialize, Clone)]
+pub struct Infrastructure {
+    /// Miles of low stress infrstructure.
+    #[serde(rename = "total_low_stress_miles")]
+    #[serde(deserialize_with = "csv::invalid_option")]
+    pub low_stress_miles: Option<f64>,
+    /// Miles of high stress infrastructure.
+    #[serde(rename = "total_high_stress_miles")]
+    #[serde(deserialize_with = "csv::invalid_option")]
+    pub high_stress_miles: Option<f64>,
 }

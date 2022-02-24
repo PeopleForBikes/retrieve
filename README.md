@@ -4,7 +4,7 @@ Retrieve PFB datasets.
 
 ## Description
 
-`retrieve` is a CLI tool aiming at simplifiying the process to retrieve 
+`retrieve` is a CLI tool aiming at simplifiying the process to retrieve
 PeopleForBikes datasets.
 
 Several datasets are downloaded concurently (25 by default), and the progress is
