@@ -15,8 +15,8 @@ time left to completion.
 
 ## Usage
 
-Retrieve the "neighborhood-ways" datasets for the list of cities specified in
-a CSV file:
+Retrieve the "neighborhood-ways" datasets for the list of cities specified in a
+CSV file:
 
 ```bash
 retrieve --from-csv examples/city_ratings_2021_v14.csv -d /tmp/pfb_test/ neighborhood-ways
