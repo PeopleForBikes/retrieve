@@ -39,7 +39,12 @@ fn main() -> Result<(), Report> {
         .filter(|c| !c.uuid.is_empty())
         .map(|c| {
             downloader::Download::new(c.url(args.dataset).unwrap().as_str()).file_name(
-                std::path::Path::new(&format!("{}.{}", &c.full_name(), &args.dataset.extension())),
+                std::path::Path::new(&format!(
+                    "{}-{}.{}",
+                    &c.full_name(),
+                    &args.dataset,
+                    &args.dataset.extension()
+                )),
             )
         })
         .collect::<Vec<Download>>();
