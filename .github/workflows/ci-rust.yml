@@ -166,7 +166,7 @@ jobs:
         run: |
           cp target/${{ matrix.target }}/release/retrieve${{ matrix.extension }} retrieve-${{ matrix.target }}${{ matrix.extension }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: retrieve-${{ matrix.target }}${{ matrix.extension }}
           path: retrieve-${{ matrix.target }}${{ matrix.extension }}
