@@ -1,8 +1,10 @@
 use clap::Parser;
 use color_eyre::{eyre::Report, Result};
 use downloader::{Download, Downloader};
+use pfbcore::scorecard::City;
+use pfbcore::Dataset;
 use retrieve::cli::Args;
-use retrieve::{setup, City};
+use retrieve::setup;
 use std::fs;
 
 fn main() -> Result<(), Report> {
@@ -38,14 +40,10 @@ fn main() -> Result<(), Report> {
         .iter()
         .filter(|c| !c.uuid.is_empty())
         .map(|c| {
-            downloader::Download::new(c.url(args.dataset).unwrap().as_str()).file_name(
-                std::path::Path::new(&format!(
-                    "{}-{}.{}",
-                    &c.full_name(),
-                    &args.dataset,
-                    &args.dataset.extension()
-                )),
-            )
+            let ds: Dataset = args.dataset.into();
+            downloader::Download::new(c.url(ds).unwrap().as_str()).file_name(std::path::Path::new(
+                &format!("{}-{}.{}", &c.full_name(), &ds, &ds.extension()),
+            ))
         })
         .collect::<Vec<Download>>();
 
