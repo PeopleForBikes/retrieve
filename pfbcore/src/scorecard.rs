@@ -277,45 +277,45 @@ pub struct ShortScoreCard {
     #[pyo3(get, set)]
     pub ra: f64,
     #[pyo3(get, set)]
-    pub rar: u8,
+    pub rasc: u8,
 
     // Community Survey
     #[pyo3(get, set)]
-    pub nw: f64,
+    pub nw: u8,
     #[pyo3(get, set)]
-    pub aw: f64,
+    pub aw: u8,
     #[pyo3(get, set)]
-    pub sf: f64,
+    pub sf: u8,
     #[pyo3(get, set)]
-    pub rs: f64,
+    pub rs: u8,
     #[pyo3(get, set)]
-    pub total: f64,
+    pub total: u8,
     #[pyo3(get, set)]
-    pub total_rounded: u32,
+    pub cssc: u8,
     #[pyo3(get, set)]
     pub responses: u32,
 
     // BNA
     #[pyo3(get, set)]
-    pub nh: f64,
+    pub nh: u8,
     #[pyo3(get, set)]
-    pub op: f64,
+    pub op: u8,
     #[pyo3(get, set)]
-    pub es: f64,
+    pub es: u8,
     #[pyo3(get, set)]
-    pub ret: f64,
+    pub ret: u8,
     #[pyo3(get, set)]
-    pub rec: f64,
+    pub rec: u8,
     #[pyo3(get, set)]
-    pub tr: f64,
+    pub tr: u8,
     #[pyo3(get, set)]
-    pub bna_score: f64,
+    pub bnasc: u8,
 
     // Infrastructure
     #[pyo3(get, set)]
-    pub lsm: f64,
+    pub lsm: u8,
     #[pyo3(get, set)]
-    pub hsm: f64,
+    pub hsm: u8,
 }
 
 impl From<&ScoreCard> for ShortScoreCard {
@@ -327,23 +327,31 @@ impl From<&ScoreCard> for ShortScoreCard {
             uuid: sc.city.uuid.clone(),
             po: sc.city.population,
             ra: sc.city.ratings,
-            rar: sc.city.ratings_rounded,
-            nw: sc.community_survey.network,
-            aw: sc.community_survey.awareness,
-            sf: sc.community_survey.safety,
-            rs: sc.community_survey.ridership,
-            total: sc.community_survey.total,
-            total_rounded: sc.community_survey.total_rounded,
+            rasc: sc.city.ratings_rounded,
+            nw: sc.community_survey.network.round() as u8,
+            aw: sc.community_survey.awareness.round() as u8,
+            sf: sc.community_survey.safety.round() as u8,
+            rs: sc.community_survey.ridership.round() as u8,
+            total: sc.community_survey.total.round() as u8,
+            cssc: sc.community_survey.total_rounded as u8,
             responses: sc.community_survey.responses,
-            nh: sc.bna.neighborhoods,
-            op: sc.bna.opportunity,
-            es: sc.bna.essential_services.unwrap_or_default(),
-            ret: sc.bna.retail,
-            rec: sc.bna.recreation.unwrap_or_default(),
-            tr: sc.bna.transit,
-            bna_score: sc.bna.overall_score,
-            lsm: sc.infrastructure.low_stress_miles.unwrap_or_default(),
-            hsm: sc.infrastructure.high_stress_miles.unwrap_or_default(),
+            nh: sc.bna.neighborhoods.round() as u8,
+            op: sc.bna.opportunity.round() as u8,
+            es: sc.bna.essential_services.unwrap_or_default().round() as u8,
+            ret: sc.bna.retail.round() as u8,
+            rec: sc.bna.recreation.unwrap_or_default().round() as u8,
+            tr: sc.bna.transit.round() as u8,
+            bnasc: sc.bna.overall_score.round() as u8,
+            lsm: sc
+                .infrastructure
+                .low_stress_miles
+                .unwrap_or_default()
+                .round() as u8,
+            hsm: sc
+                .infrastructure
+                .high_stress_miles
+                .unwrap_or_default()
+                .round() as u8,
         }
     }
 }
