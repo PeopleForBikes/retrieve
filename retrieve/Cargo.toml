@@ -16,5 +16,5 @@ csv = "1.1.6"
 downloader = { version = "0.2.6", features = ["tui"]}
 openssl = { version = '0.10', features = ["vendored"] }
 pfbcore = { path = "../pfbcore" }
-serde = { version="1.0.140", features = ["derive"]}
+serde = { version="1.0.142", features = ["derive"]}
 url = "2.0"
