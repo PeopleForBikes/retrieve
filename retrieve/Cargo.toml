@@ -13,7 +13,7 @@ repository = "https://github.com/PeopleForBikes/retrieve"
 clap = { version = "3.2.2", features = ["derive"] }
 color-eyre = "0.6"
 csv = "1.1.6"
-downloader = { version = "0.2.6", features = ["tui"]}
+downloader = { version = "0.2.7", features = ["tui"]}
 openssl = { version = '0.10', features = ["vendored"] }
 pfbcore = { path = "../pfbcore" }
 serde = { version="1.0.144", features = ["derive"]}
